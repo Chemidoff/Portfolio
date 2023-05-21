@@ -4,18 +4,16 @@
 
 Укажите UserID из первой строки результирующей таблицы, используя сортировку по убыванию по полю DeviceID.
 
-SELECT 
-    events.AppPlatform as Platform,
-    events.events as events, 
-    events.EventDate as EventDate,
-    events.DeviceID as DeviceID,
-    UserID
-FROM events
-JOIN (
-     SELECT devices.UserID as UserID,
-     devices.DeviceID as DeviceID
-     FROM devices
-     ) as devices 
-USING DeviceID
-ORDER BY DeviceID DESC
+SELECT
+    e.AppPlatform AS AppPlatform,
+    e.DeviceID AS DeviceID,
+    e.EventDate AS EventDate,
+    e.events AS events,
+    d.UserID AS UserID
+FROM 
+    events as e
+LEFT JOIN devices AS d
+    ON e.DeviceID = d.DeviceID
+ORDER BY 
+    DeviceID DESC
 LIMIT 1
