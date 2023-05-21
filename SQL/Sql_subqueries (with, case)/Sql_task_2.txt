@@ -1,0 +1,23 @@
+Посчитайте среднее расстояние до центра города и выведите идентификаторы объявлений о сдаче отдельных комнат, для которых расстояние оказалось меньше среднего. 
+Результат отсортируйте по убыванию, тем самым выбрав комнату, которая является наиболее удаленной от центра, но при этом расположена ближе, чем остальные комнаты в среднем.
+
+SELECT
+    host_id,
+    room_type,
+    longitude,
+    latitude,
+    geoDistance(13.4050, 52.5200, toFloat64OrNull(longitude), toFloat64OrNull(latitude)) as dist
+FROM
+    listings
+WHERE 
+    dist < (SELECT 
+                AVG(geoDistance(13.4050, 52.5200, toFloat64OrNull(longitude), toFloat64OrNull(latitude))) as AvgDist
+            FROM
+                listings
+            WHERE 
+                room_type = 'Private room'
+            )
+    AND room_type = 'Private room'
+ORDER BY
+    dist DESC
+LIMIT 10
