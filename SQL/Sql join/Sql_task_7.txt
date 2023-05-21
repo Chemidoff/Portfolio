@@ -1,0 +1,15 @@
+Давайте посчитаем число уникальных DeviceID в инсталлах, для которых присутствуют просмотры в таблице events с разбивкой по платформам (поле Platform). 
+Для этого можно отобрать все строки только из таблицы installs, для которых нашлось соответствие в таблице events. 
+
+
+SELECT 
+    COUNT(DISTINCT(DeviceID)) AS devices_number,
+    Platform 
+FROM 
+    installs AS i 
+LEFT SEMI JOIN 
+    events AS ev 
+ON 
+    i.DeviceID=ev.DeviceID 
+GROUP BY 
+    Platform
