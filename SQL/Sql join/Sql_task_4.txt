@@ -1,25 +1,17 @@
 Самое время посмотреть на общую выручку, а также минимальный, максимальный и средний чек.
 
 SELECT
-    l.DeviceID as DeviceID,
-    l.Source as Source,
-    r.UserID as UserID,
-    z.avg_rub as avg_rub,
-    z.sum_rub as sum_rub,
-    z.min_rub as min_rub,
-    z.max_rub as max_rub
-FROM installs as l
-JOIN devices as r 
-    USING DeviceID 
-JOIN 
-(SELECT 
-    UserID,
-    AVG(Rub) as avg_rub,
-    SUM(Rub) as sum_rub,
-    MIN(Rub) as min_rub,
-    MAX(Rub) as max_rub
-    FROM checks
-    GROUP BY UserID) as z
-ON r.UserID = z.UserID  
-Where Source = 'Source_13'
-limit 100
+    i.Source, 
+    SUM(Rub) as Revenue,
+    MIN(Rub) as MinRub,
+    MAX(Rub) as MaxRub,
+    AVG(Rub) as AvgRub
+FROM 
+    checks as ch
+JOIN devices as d
+    ON ch.UserID = d.UserID
+JOIN installs as i
+    ON d.DeviceID = i.DeviceID
+GROUP BY 
+    i.Source
+LIMIT 50
