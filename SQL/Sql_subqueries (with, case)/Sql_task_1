@@ -1,0 +1,19 @@
+Сначала оставьте только те объявления, где оценка на основе отзывов выше среднего, а число отзывов в месяц составляет строго меньше трёх. 
+Затем отсортируйте по убыванию две колонки: сначала по числу отзывов в месяц, потом по оценке.
+
+
+SELECT 
+    id, 
+    reviews_per_month,
+    toFloat64OrNull(review_scores_rating) as review_scores_rating
+FROM listings
+WHERE review_scores_rating > (
+                            SELECT 
+                                AVG(toFloat64OrNull(review_scores_rating))
+                            FROM listings
+                            )
+    AND reviews_per_month < 3
+ORDER BY
+    review_scores_rating DESC,
+    reviews_per_month DESC
+LIMIT 100
