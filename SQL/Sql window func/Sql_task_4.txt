@@ -1,0 +1,13 @@
+Посмотрим более подробно на объемы продаж авокадо в Нью-Йорке (NewYork) в 2018 году. Создайте колонку с разницей объемов продаж за неделю и за неделю до этого для каждого типа авокадо.
+
+
+Select 
+    date,
+    total_volume,
+    total_volume - LAG(total_volume) OVER (PARTITION BY type Order by date) as week_diff,
+    type,
+    region
+From avocado
+Where region = 'NewYork'
+AND year = 2018
+Order by type, date
