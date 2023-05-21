@@ -1,0 +1,38 @@
+Давайте найдем в таблице calendar_summary те доступные (available='t') объявления, у которых число отзывов от уникальных пользователей в таблице reviews выше среднего.
+
+Для этого с помощью конструкции WITH посчитайте среднее число уникальных reviewer_id из таблицы reviews на каждое жильё, 
+потом проведите джойн таблиц calendar_summary и reviews по полю listing_id (при этом из таблицы calendar_summary должны быть отобраны уникальные listing_id, отфильтрованные по правилу available='t'). 
+Результат отфильтруйте так, чтобы остались только записи, у которых число отзывов от уникальных людей выше среднего.
+Отсортируйте результат по возрастанию listing_id и в качестве ответа впишите количество отзывов от уникальных пользователей из первой строки.
+
+
+WITH
+(SELECT 
+  AVG(review_num) 
+FROM (
+  SELECT COUNT(DISTINCT(reviewer_id)) review_num, listing_id  
+  FROM reviews GROUP BY listing_id)
+      ) AS avg_review
+
+SELECT
+listing_id,
+review_num
+FROM (
+	SELECT
+    	COUNT(DISTINCT(reviewer_id)) review_num,
+    	listing_id
+	FROM reviews
+	GROUP BY listing_id
+	) AS r
+JOIN (
+	SELECT
+    	listing_id
+	FROM calendar_summary
+	WHERE available='t' 
+GROUP BY listing_id
+	) AS c
+ON
+	c.listing_id = r.listing_id
+WHERE review_num > avg_review  
+ORDER BY listing_id
+LIMIT 10
