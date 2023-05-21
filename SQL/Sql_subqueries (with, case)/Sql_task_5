@@ -1,0 +1,18 @@
+Используйте таблицу checks и разделите всех покупателей на сегменты:
+• А — средний чек покупателя менее 5 ₽
+• B — средний чек покупателя от 5-10 ₽
+• C — средний чек покупателя от 10-20 ₽
+• D — средний чек покупателя от 20 
+
+
+SELECT
+    UserID,
+    CASE
+        WHEN avg(Rub) < 5 THEN 'A'
+        WHEN avg(Rub) >= 5 AND avg(Rub) < 10 THEN 'B'
+        WHEN avg(Rub) >= 10 AND avg(Rub) < 20 THEN 'C'
+        ELSE 'D'
+    END AS segment
+FROM checks
+GROUP BY UserID
+ORDER BY U
