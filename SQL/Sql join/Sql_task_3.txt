@@ -2,21 +2,15 @@
 Объедините нужные таблицы, посчитайте число уникальных UserID для каждого источника (Source), и в качестве ответа укажите число пользователей, пришедших из Source_7.
 
 SELECT 
-    installs.Source as Source,
-    COUNT(DISTINCT joined_tables.UserID) as UserID
-    FROM installs as installs 
-    JOIN(
-SELECT 
-    checks.UserID,
-    devices.DeviceID
-FROM checks
-    JOIN(
-    SELECT 
-        devices.UserID, 
-        devices.DeviceID
-    FROM devices) as devices
-    USING UserID) as joined_tables
-    ON installs.DeviceID = joined_tables.DeviceID
-    GROUP BY Source
-    HAVING Source = 'Source_7'
-limit 100
+    COUNT(DISTINCT ch.UserID) as Uniqe_users,
+    i.Source as Source
+FROM 
+    checks as ch
+JOIN devices as d
+    ON ch.UserID = d.UserID
+JOIN installs as i
+    ON d.DeviceID = i.DeviceID
+WHERE i.Source = 'Source_7'
+GROUP BY 
+    i.Source
+LIMIT 1
