@@ -1,0 +1,27 @@
+Используйте предыдущий запрос как подзапрос и посчитайте, сколько клиентов приходится на каждый сегмент и сколько доходов он приносит. 
+Отсортируйте результат по убыванию суммы доходов на сегмент и в качестве ответа укажите наибольшую сумму.
+
+
+SELECT
+    segment,
+    COUNT(DISTINCT UserID),
+    sum(Rub) as Revenue
+FROM
+    checks
+JOIN
+    (
+    SELECT
+    UserID,
+    CASE
+        WHEN avg(Rub) < 5 THEN 'A'
+        WHEN avg(Rub) >= 5 AND avg(Rub) < 10 THEN 'B'
+        WHEN avg(Rub) >= 10 AND avg(Rub) < 20 THEN 'C'
+        ELSE 'D'
+    END AS segment
+    FROM checks
+    GROUP BY UserID
+    ) as sub
+USING (UserID)
+GROUP BY segment
+ORDER BY Revenue DESC
+LIMIT 10
