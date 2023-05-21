@@ -1,0 +1,20 @@
+Вернемся к таблице AirBnb. Предположим, что в выборе жилья нас интересует только два параметра: наличие кухни (kitchen) и гибкой системы отмены (flexible), причем первый в приоритете.
+
+Создайте с помощью оператора CASE колонку с обозначением группы, в которую попадает жилье из таблицы listings:
+
+1) 'good', если в удобствах (amenities) присутствует кухня и система отмены (cancellation_policy) гибкая
+2) 'ok', если в удобствах есть кухня, но система отмены не гибкая
+3) 'not ok' во всех остальных случаях
+
+
+SELECT 
+    host_id,
+CASE
+    WHEN multiSearchAnyCaseInsensitive(amenities, ['kitchen'])!=0 AND cancellation_policy = 'flexible' THEN 'good'
+    WHEN multiSearchAnyCaseInsensitive(amenities, ['kitchen'])!=0 AND cancellation_policy != 'flexible' THEN 'ok'
+ELSE 'not ok'
+END my_group
+FROM 
+    listings 
+ORDER BY 
+    my_group LIMIT 5
