@@ -1,1 +1,16 @@
+Теперь добавьте разбиение по каждому году (year). Таким образом, в конце февраля 2016 года объем составит уже не продажи за 2015 и январь-февраль 2016, а только январь-февраль 2016.
+Когда объемы продаж органических авокадо в Нью-Йорке превысили объемы продаж в Лос-Анджелесе?
+Для решения задачи постройте график объема продаж в двух городах, где по оси X будет лежать дата. 
 
+Select 
+    date, 
+    region, 
+    extract(year from date) as year, 
+    total_volume, sum(total_volume) OVER (
+                                         partition by region, year
+                                         order by date asc
+                                         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+                                         ) AS volume
+From avocado
+Where (region = 'NewYork' or region = 'LosAngeles') and type = 'organic'
+Order by region DESC, date ASC
